@@ -69,6 +69,7 @@ int PCBuffer::Deposit(/*string*/ int _item) {
         pthread_cond_wait(&notfull, &m);
     buffer[nextin] = _item;
     nextin = (nextin + 1) % size;
+    count = count + 1;
     pthread_cond_broadcast(&notempty);
     pthread_mutex_unlock(&m);
     return count;
