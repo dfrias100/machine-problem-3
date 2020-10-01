@@ -49,7 +49,7 @@
 /* FUNCTIONS FOR CLASS P C B u f f e r */
 /*--------------------------------------------------------------------------*/
 
-PCBuffer::PCBuffer(int _size) {
+PCBuffer::PCBuffer(int _size) : size(_size) {
     m = PTHREAD_MUTEX_INITIALIZER;    
     notfull = PTHREAD_COND_INITIALIZER;
     notempty = PTHREAD_CONT_INITIALIZER;
@@ -65,7 +65,7 @@ PCBuffer::~PCBuffer() {
 
 int PCBuffer::Deposit(string _item) {
     pthread_mutex_lock(&m);
-    while (count == _size)
+    while (count == size)
         pthread_cont_wait(&notfull, &m)
     buffer[nextin] = _item;
     nextin = (nextin + 1) % size;

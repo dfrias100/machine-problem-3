@@ -61,7 +61,7 @@ public:
 
   /* -- CONSTRUCTOR/DESTRUCTOR */
 
-  PCBuffer(int _size) : size(_size);
+  PCBuffer(int _size);
 
   ~PCBuffer();
   
