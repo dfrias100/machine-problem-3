@@ -51,6 +51,12 @@ private:
                           // You may instead prefer a vector, or a queue, or ...
   int             size;   // Size of the bounded buffer.
  
+  int nextin, nextout, count;
+
+  pthread_cond_t notfull, notempty;
+
+  pthread_mutex_t m;
+
 public:
 
   /* -- CONSTRUCTOR/DESTRUCTOR */
