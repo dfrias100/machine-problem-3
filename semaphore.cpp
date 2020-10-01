@@ -51,21 +51,26 @@
 
 Semaphore::Semaphore(int _val) : value(_val) {
     m = PTHREAD_MUTEX_INITIALIZER;
-    c = PTHREAD_COND_INTIALIZER;
+    c = PTHREAD_COND_INITIALIZER;
 }
 
-Semaphore::P() {
+Semaphore::~Semaphore() {
+}
+
+int Semaphore::P() {
     pthread_mutex_lock(&m);
     value--;
     while (value <= 0)
         pthread_cond_wait(&c, &m);
     pthread_mutex_unlock(&m);
+    return value;
 }
 
-Semaphore::V() {
+int Semaphore::V() {
     pthread_mutex_lock(&m);
     value++;
     if (value == 1)
-        pthread_cond_signal(&c, &m);
+        pthread_cond_broadcast(&c);
     pthread_mutex_unlock(&m);
+    return value;
 }
