@@ -69,7 +69,7 @@ public:
 
   int Deposit(string _item);
 
-  string Retrieve();
+  /*string*/ int Retrieve();
 
 };
 

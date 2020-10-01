@@ -74,11 +74,11 @@ int PCBuffer::Deposit(string _item) {
     return count;
 }
 
-string PCBuffer::Retrieve() {
+/*string*/ int PCBuffer::Retrieve() {
     pthread_mutex_lock(&m);
     while (count == 0)
         pthread_cond_wait(&notempty, &m);
-    string ret = buffer[nextout];
+    /*string*/ int ret = buffer[nextout];
     nextout = (nextout + 1) % size;
     pthread_cond_signal(&notfull);
     pthread_mutex_unlock(&m);
