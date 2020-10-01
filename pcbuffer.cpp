@@ -63,7 +63,7 @@ PCBuffer::~PCBuffer() {
     delete[] buffer;
 }
 
-int PCBuffer::Deposit(string _item) {
+int PCBuffer::Deposit(/*string*/ int _item) {
     pthread_mutex_lock(&m);
     while (count == size)
         pthread_cond_wait(&notfull, &m);
