@@ -66,7 +66,7 @@ PCBuffer::~PCBuffer() {
 int PCBuffer::Deposit(string _item) {
     pthread_mutex_lock(&m);
     while (count == size)
-        pthread_cond_wait(&notfull, &m)
+        pthread_cond_wait(&notfull, &m);
     buffer[nextin] = _item;
     nextin = (nextin + 1) % size;
     pthread_cond_signal(&notempty);
