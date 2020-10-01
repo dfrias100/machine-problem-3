@@ -53,7 +53,7 @@ PCBuffer::PCBuffer(int _size) : size(_size) {
     m = PTHREAD_MUTEX_INITIALIZER;    
     notfull = PTHREAD_COND_INITIALIZER;
     notempty = PTHREAD_COND_INITIALIZER;
-    buffer = new string[size];
+    buffer = new /* string[size] */ int[size];
     nextin = 0;
     nextout = 0;
     count = 0;

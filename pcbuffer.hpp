@@ -47,7 +47,7 @@ private:
   /* -- INTERNAL DATA STRUCTURES
      You will need to change them to fit your implementation. */
 
-  string        * buffer; // We buffer the data in an array of strings. 
+  /*string*/ int        * buffer; // We buffer the data in an array of strings. 
                           // You may instead prefer a vector, or a queue, or ...
   int             size;   // Size of the bounded buffer.
  
