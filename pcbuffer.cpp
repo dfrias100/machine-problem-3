@@ -74,7 +74,8 @@ int PCBuffer::Deposit(/*string*/ int _item) {
     return count;
 }
 
-/*string*/ int PCBuffer::Retrieve() {
+// CHANGE BACK TO Retrieve
+/*string*/ int PCBuffer::Remove() {
     pthread_mutex_lock(&m);
     while (count == 0)
         pthread_cond_wait(&notempty, &m);
