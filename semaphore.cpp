@@ -60,7 +60,7 @@ Semaphore::~Semaphore() {
 int Semaphore::P() {
     pthread_mutex_lock(&m);
     value--;
-    while (value <= 0)
+    while (value == 0)
         pthread_cond_wait(&c, &m);
     pthread_mutex_unlock(&m);
     return value;
@@ -69,8 +69,7 @@ int Semaphore::P() {
 int Semaphore::V() {
     pthread_mutex_lock(&m);
     value++;
-    if (value == 1)
-        pthread_cond_broadcast(&c);
+    pthread_cond_broadcast(&c);
     pthread_mutex_unlock(&m);
     return value;
 }
