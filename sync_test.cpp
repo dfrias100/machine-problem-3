@@ -57,7 +57,7 @@ Mutex m;
 #include "semaphore.hpp"
 Semaphore s(5);
 #elif PCBUFFER_TEST
-#include "pc_buffer.hpp"
+#include "pcbuffer.hpp"
 #endif
 
 /*--------------------------------------------------------------------------*/
