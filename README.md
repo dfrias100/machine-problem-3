@@ -1,2 +1,2 @@
 # machine-problem-3
-MP3: Dealing with a Reluctant Server
+MP3: Dealing With a Reluctant Server
