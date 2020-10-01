@@ -82,4 +82,5 @@ string PCBuffer::Retrieve() {
     nextout = (nextout + 1) % size;
     pthread_cond_signal(&notfull);
     pthread_mutex_unlock(&m);
+    return ret;
 }
