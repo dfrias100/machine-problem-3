@@ -49,7 +49,7 @@
 /* FUNCTIONS FOR CLASS P C B u f f e r */
 /*--------------------------------------------------------------------------*/
 
-PCBuffer::PCBuffer(int _size) : size(_size) {
+PCBuffer::PCBuffer(int _size) {
     m = PTHREAD_MUTEX_INITIALIZER;    
     notfull = PTHREAD_COND_INITIALIZER;
     notempty = PTHREAD_CONT_INITIALIZER;
