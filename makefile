@@ -19,10 +19,10 @@ semaphore: semaphore.hpp semaphore.cpp
 pcbuffer: pcbuffer.hpp pcbuffer.cpp
 	$(C++) -c -g pcbuffer.cpp
 
-sync_test_pcb: pcbuffer.o
+sync_test_pcb: sync_test.cpp pcbuffer.o
 	$(C++) -DPCBUFFER_TEST -o sync_test_pcb sync_test.cpp pcbuffer.o -lpthread
 
-sync_test_s: semaphore.o 
+sync_test_s: sync_test.cpp semaphore.o 
 	$(C++) -DSEMAPHORE_TEST -o sync_test_s sync_test.cpp semaphore.o -lpthread
 
 reqchannel.o: reqchannel.hpp reqchannel.cpp

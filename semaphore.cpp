@@ -59,9 +59,9 @@ Semaphore::~Semaphore() {
 
 int Semaphore::P() {
     pthread_mutex_lock(&m);
-    value--;
     while (value == 0)
         pthread_cond_wait(&c, &m);
+    value--;
     pthread_mutex_unlock(&m);
     return value;
 }
