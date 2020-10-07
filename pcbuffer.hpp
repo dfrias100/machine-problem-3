@@ -47,7 +47,7 @@ private:
   /* -- INTERNAL DATA STRUCTURES
      You will need to change them to fit your implementation. */
 
-  /*string*/ int        * buffer; // We buffer the data in an array of strings. 
+  string        * buffer; // We buffer the data in an array of strings. 
                           // You may instead prefer a vector, or a queue, or ...
   int             size;   // Size of the bounded buffer.
  
@@ -67,9 +67,9 @@ public:
   
   /* -- OPERATIONS ON PC BUFFER */
 
-  int Deposit(/*string*/ int _item);
+  int Deposit(string _item);
 
-  /*string*/ int Remove();
+  string Retrieve();
 
 };
 

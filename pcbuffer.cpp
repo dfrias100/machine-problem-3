@@ -53,7 +53,7 @@ PCBuffer::PCBuffer(int _size) : size(_size) {
     m = PTHREAD_MUTEX_INITIALIZER;    
     notfull = PTHREAD_COND_INITIALIZER;
     notempty = PTHREAD_COND_INITIALIZER;
-    buffer = new /* string[size] */ int[size];
+    buffer = new string[size];
     nextin = 0;
     nextout = 0;
     count = 0;
@@ -63,7 +63,7 @@ PCBuffer::~PCBuffer() {
     delete[] buffer;
 }
 
-int PCBuffer::Deposit(/*string*/ int _item) {
+int PCBuffer::Deposit(string _item) {
     pthread_mutex_lock(&m);
     while (count == size)
         pthread_cond_wait(&notfull, &m);
@@ -75,12 +75,12 @@ int PCBuffer::Deposit(/*string*/ int _item) {
     return count;
 }
 
-// CHANGE BACK TO Retrieve
-/*string*/ int PCBuffer::Remove() {
+
+string PCBuffer::Retrieve() {
     pthread_mutex_lock(&m);
     while (count == 0)
         pthread_cond_wait(&notempty, &m);
-    /*string*/ int ret = buffer[nextout];
+    string ret = buffer[nextout];
     nextout = (nextout + 1) % size;
     count = count - 1;
     pthread_cond_signal(&notfull);
