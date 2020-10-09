@@ -6,7 +6,7 @@
 # g++ is for most Linux
 C++ = g++ -std=c++11
 
-all: dataserver client test_suite
+all: dataserver client
 
 clean: 
 	rm *.o
@@ -31,5 +31,5 @@ reqchannel.o: reqchannel.hpp reqchannel.cpp
 dataserver: dataserver.cpp reqchannel.o 
 	$(C++) -o dataserver dataserver.cpp reqchannel.o -lpthread
 
-simpleclient: simpleclient.cpp reqchannel.o
-	$(C++) -o simpleclient simpleclient.cpp reqchannel.o
+client: client.cpp reqchannel.o pcbuffer.o semaphore.o
+	$(C++) -o client client.cpp reqchannel.o pcbuffer.o semaphore.o -lpthread
