@@ -87,7 +87,7 @@ void* request_thread_func(void* args) {
     for (size_t i = 0; i < rtfargs->n_req; i++) {
         std::string req = "data " + rtfargs->patient_name;
         std::cout << "Depositing request..." << std::endl;
-	rtfargs->PCB->Deposit(req);
+	    rtfargs->PCB->Deposit(req);
     }
     return nullptr;
 }
