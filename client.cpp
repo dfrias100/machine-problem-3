@@ -118,6 +118,7 @@ int main(int argc, char * argv[]) {
                 break;
             case 'w':
                 sscanf(optarg, "%zu", &num_threads);
+                break;
             case ':':
                 std::cout << "Option requires an argument" << std::endl;
                 return 1;
