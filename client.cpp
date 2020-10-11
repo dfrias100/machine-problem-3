@@ -55,7 +55,7 @@ Semaphore s(1);
 /* CONSTANTS */
 /*--------------------------------------------------------------------------*/
 
-    /* -- (none) -- */
+const int NUM_PATIENTS = 100;
 
 /*--------------------------------------------------------------------------*/
 /* FORWARDS */
@@ -102,28 +102,54 @@ void create_worker(int _thread_id, RequestChannel* rq, PCBuffer* PCB, WTFargs* a
 
 int main(int argc, char * argv[]) {
 
+    size_t num_requests = 0;
+    size_t pcb_size = 0;
+    size_t num_threads = 0;
+    
+    while((opt = getopt(argc, argv, ":n:b:w:")) != -1) {
+        switch (opt) {
+            case 'b':
+                sscanf(optarg, "%zu", &num_requests);
+                break;
+            case 'b':
+                sscanf(optarg, "%zu", &pcb_size);
+                break;
+            case 'w':
+                sscanf(optarg, "%zu", &num_threads);
+            case ':':
+                std::cout << "Option requires an argument" << std::endl;
+                return 1;
+            case '?':
+                std::cout << "Unknown argument" << std::endl;
+                return 1;
+        }
+    }
+
+    if (num_requests == 0 || pcb_size == 0 || num_threads == 0) {
+        std::cout << "Invalid parameters or no parameters passed. Check your input and start again." << std::endl;
+        exit(1);
+    }   
+
     std::cout << "CLIENT STARTED:" << std::endl;
 
     std::cout << "Establishing control channel... " << std::flush;
     RequestChannel chan("control", RequestChannel::Side::CLIENT);
     std::cout << "done." << std::endl;
 
-    size_t num_threads = 5;
-
     std::cout << "Creating PCBuffer..." << std::endl;
-    PCBuffer* PCB = new PCBuffer(10*40);
+    PCBuffer* PCB = new PCBuffer(pcb_size);
     if (PCB == 0) {
         std::cout << "PCBuffer creation failed! Exiting..." << std::endl;
-        exit(-1);
+        exit(1);
     }
     std::cout << "done." << std::endl;
 
-    pthread_t* rq_threads = new pthread_t[40];
-    RTFargs* rtfargs = new RTFargs[40];
+    pthread_t* rq_threads = new pthread_t[NUM_PATIENTS];
+    RTFargs* rtfargs = new RTFargs[NUM_PATIENTS];
 
     std::cout << "Creating request threads..." << std::endl;
-    for (size_t i = 0; i < 40; i++) {
-        rtfargs[i].n_req = 10;
+    for (size_t i = 0; i < NUM_PATIENTS; i++) {
+        rtfargs[i].n_req = num_requests;
         rtfargs[i].patient_name = "Patient " + std::to_string(i + 1);
         rtfargs[i].PCB = PCB;
         pthread_create(&rq_threads[i], NULL, request_thread_func, (void*) &rtfargs[i]);
