@@ -110,7 +110,7 @@ int main(int argc, char * argv[]) {
 
     while((opt = getopt(argc, argv, ":n:b:w:")) != -1) {
         switch (opt) {
-            case 'b':
+            case 'n':
                 sscanf(optarg, "%zu", &num_requests);
                 break;
             case 'b':
