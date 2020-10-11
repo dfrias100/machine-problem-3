@@ -32,7 +32,6 @@
 
 #include "reqchannel.hpp"
 #include "pcbuffer.hpp"
-#include "semaphore.hpp"
 
 /*--------------------------------------------------------------------------*/
 /* DATA STRUCTURES */ 
@@ -88,7 +87,7 @@ void* request_thread_func(void* args) {
     for (size_t i = 0; i < rtfargs->n_req; i++) {
         std::string req = "data " + rtfargs->patient_name;
         std::cout << "Depositing request..." << std::endl;
-        rtfargs->PCB->Deposit(req);
+	rtfargs->PCB->Deposit(req);
     }
     return nullptr;
 }
@@ -98,8 +97,10 @@ void* worker_thread_func(void* args) {
     for(;;) {
         std::string req = wtfargs->PCB->Retrieve();
         std::cout << "New request: " << req << std::endl;
+	s.P();
         std::string reply = wtfargs->rc->send_request(req);
-        std::cout << "Reply to request '" << req << "': " << reply << std::endl;
+        s.V();
+	std::cout << "Reply to request '" << req << "': " << reply << std::endl;
     }
     return nullptr;
 }
@@ -121,7 +122,7 @@ void create_worker(int _thread_id, RequestChannel* rq, PCBuffer* PCB, WTFargs* a
     args[_thread_id].rc = rq;
     std::cout << "Creating new worker thread..." << std::endl;
     pthread_create(&args[_thread_id].thread_id, NULL, worker_thread_func, (void*) &args[_thread_id]);
-    pthread_join(args[_thread_id].thread_id, NULL);
+    //pthread_join(args[_thread_id].thread_id, NULL);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -189,7 +190,7 @@ int main(int argc, char * argv[]) {
         rtfargs[i].patient_name = "Patient " + std::to_string(i + 1);
         rtfargs[i].PCB = PCB;
         pthread_create(&rq_threads[i], NULL, request_thread_func, (void*) &rtfargs[i]);
-        pthread_join(rq_threads[i], NULL);
+        //pthread_join(rq_threads[i], NULL);
     }
     std::cout << "done." << std::endl;
  

@@ -1,4 +1,4 @@
-/* 
+/*
     File: pcbuffer.hpp
 
     Author: R. Bettati
@@ -23,6 +23,7 @@
 
 #include <string>
 #include <pthread.h>
+#include "semaphore.hpp"
 
 using namespace std;
 /*--------------------------------------------------------------------------*/
@@ -53,9 +54,13 @@ private:
  
   int nextin, nextout, count;
 
-  pthread_cond_t notfull, notempty;
+  //pthread_cond_t notfull, notempty;
 
-  pthread_mutex_t m;
+  //pthread_mutex_t m;
+
+  Semaphore mutex;
+  Semaphore empty;
+  Semaphore full;
 
 public:
 
@@ -67,7 +72,7 @@ public:
   
   /* -- OPERATIONS ON PC BUFFER */
 
-  int Deposit(string _item);
+  int Deposit(string  _item);
 
   string Retrieve();
 
