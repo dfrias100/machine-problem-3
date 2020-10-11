@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <vector>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -37,17 +38,32 @@
 /* DATA STRUCTURES */ 
 /*--------------------------------------------------------------------------*/
 
- typedef struct {
-     int n_req;
-     string patient_name;
-     PCBuffer* PCB;
- } RTFargs;
+typedef struct {
+    int n_req;
+    string patient_name;
+    PCBuffer* PCB;
+} RTFargs;
 
 typedef struct {
     PCBuffer* PCB;
     RequestChannel* rc;
     pthread_t thread_id;
 } WTFargs;
+
+typedef struct {
+    /* Histogram bins
+        0 - 9
+        10 - 19
+        20 - 29
+        30 - 39
+        40 - 49
+        50 - 59
+        60 - 69
+        70 - 79
+        80 - 89
+        90 - 99 */
+    vector<int> histogram[10]; 
+} PatientHistogram;
 
 Semaphore s(1);
 
@@ -88,6 +104,18 @@ void* worker_thread_func(void* args) {
     return nullptr;
 }
 
+void* stats_thread_func(void* args) {
+    for (;;) {
+        /* Pseudocode
+            string Name = stfargs->patient_name;
+            PatientHistogram* hist = &stfargs->hash_table->search(Name);
+            if (stfargs->data <= 9)
+                hist[0].push_back(stfargs->data);
+            ... (do this until <= 99)
+        */
+    }
+}
+
 void create_worker(int _thread_id, RequestChannel* rq, PCBuffer* PCB, WTFargs* args) {
     args[_thread_id].PCB = PCB;
     args[_thread_id].rc = rq;
@@ -101,6 +129,11 @@ void create_worker(int _thread_id, RequestChannel* rq, PCBuffer* PCB, WTFargs* a
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char * argv[]) {
+    /* TODO: 
+        - Implement hashtables for patients
+        - Create multiple PCBuffers for stats threads
+        - Have worker thread deposit into PCBuffer
+    */
 
     size_t num_requests = 0;
     size_t pcb_size = 0;
