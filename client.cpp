@@ -106,6 +106,8 @@ int main(int argc, char * argv[]) {
     size_t pcb_size = 0;
     size_t num_threads = 0;
     
+    int opt;
+
     while((opt = getopt(argc, argv, ":n:b:w:")) != -1) {
         switch (opt) {
             case 'b':
