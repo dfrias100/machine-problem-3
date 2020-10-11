@@ -97,7 +97,7 @@ void* worker_thread_func(void* args) {
     for(;;) {
         std::string req = wtfargs->PCB->Retrieve();
         std::cout << "New request: " << req << std::endl;
-	s.P();
+	    s.P();
         std::string reply = wtfargs->rc->send_request(req);
         s.V();
 	std::cout << "Reply to request '" << req << "': " << reply << std::endl;
