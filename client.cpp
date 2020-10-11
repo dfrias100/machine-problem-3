@@ -100,7 +100,7 @@ void* worker_thread_func(void* args) {
 	    s.P();
         std::string reply = wtfargs->rc->send_request(req);
         s.V();
-	std::cout << "Reply to request '" << req << "': " << reply << std::endl;
+	    std::cout << "Reply to request '" << req << "': " << reply << std::endl;
     }
     return nullptr;
 }
