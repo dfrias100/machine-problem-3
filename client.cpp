@@ -38,7 +38,7 @@
 /* DATA STRUCTURES */ 
 /*--------------------------------------------------------------------------*/
 
-/* typedef struct { */
+/*typedef struct {*/ 
     /* Histogram bins
         0 - 9
         10 - 19
@@ -50,9 +50,9 @@
         70 - 79
         80 - 89
         90 - 99 */
-    /* PCBuffer* PatientDataBuffer;
+    /*PCBuffer* PatientDataBuffer;
     vector<int> histogram[10]; 
-} PatientHistogram; */
+} PatientHistogram;*/
 
 typedef struct {
     int n_req;
@@ -63,14 +63,14 @@ typedef struct {
 typedef struct {
     PCBuffer* PCB;
     RequestChannel* rc;
-    /* unordered_map<string, PatientHistogram*>* PatientData; */
+    /* unordered_map<string, PatientHistogram>* PatientData; */
     pthread_t thread_id;
 } WTFargs;
 
-/* typedef struct {
-    unordered_map<string, PatientHistogram*>* PatientData;
+/*typedef struct {
+    unordered_map<string, PatientHistogram>* PatientData;
     string patient_name;
-} STFargs; */
+} STFargs;*/
 
 Semaphore request_chan_mutex(1);
 
@@ -105,11 +105,11 @@ void* worker_thread_func(void* args) {
     for(;;) {
         std::string req = wtfargs->PCB->Retrieve();
 
-        request_chan_mutex.P();
         std::cout << "New request: " << req << std::endl;
+        request_chan_mutex.P();
         std::string reply = wtfargs->rc->send_request(req);
-	    std::cout << "Reply to request '" << req << "': " << reply << std::endl;
         request_chan_mutex.V();
+	    std::cout << "Reply to request '" << req << "': " << reply << std::endl;
 
         /* std::string name = reply.substr(5, reply.length() - 1);
         PatientHistogram* patient_histogram = wtfargs->PatientData[name];
@@ -185,9 +185,9 @@ int main(int argc, char * argv[]) {
     RequestChannel chan("control", RequestChannel::Side::CLIENT);
     std::cout << "done." << std::endl;
 
-    std::cout << "Creating hash map..." << std::endl;
-    std::unordered_map<string, PatientHistogram*>* patient_data = new unordered_map<string,PatientHistogram>();
-    std::cout << "done." << std::endl;
+    /*std::cout << "Creating hash map..." << std::endl;
+    std::unordered_map<std::string, PatientHistogram>* patient_data = new unordered_map<string,PatientHistogram>();
+    std::cout << "done." << std::endl;*/
 
     std::cout << "Creating PCBuffer..." << std::endl;
     PCBuffer* PCB = new PCBuffer(pcb_size);
@@ -200,7 +200,7 @@ int main(int argc, char * argv[]) {
     pthread_t* rq_threads = new pthread_t[NUM_PATIENTS];
     pthread_t* st_threads = new pthread_t[NUM_PATIENTS];
     RTFargs* rtfargs = new RTFargs[NUM_PATIENTS];
-    /* STFargs* stfargs = new STFargs[NUM_PATIENTS]; */
+    // STFargs* stfargs = new STFargs[NUM_PATIENTS]; 
 
     std::cout << "Creating request threads..." << std::endl;
     for (size_t i = 0; i < NUM_PATIENTS; i++) {
@@ -209,12 +209,12 @@ int main(int argc, char * argv[]) {
         rtfargs[i].PCB = PCB;
         pthread_create(&rq_threads[i], NULL, request_thread_func, (void*) &rtfargs[i]);
 
-        /*
-        PCBuffer* stats_buff = new PCBuffer(pcb_size);
-        patient_data[rtfargs[i].patient_name]->PatientDataBuffer = stats_buff;
+        
+        /* PCBuffer* stats_buff = new PCBuffer(pcb_size);
+        (*patient_data)[rtfargs[i].patient_name].PatientDataBuffer = stats_buff;
         stfargs[i].PatientData = patient_data;
         stfargs[i].patient_name = rtfargs[i].patient_name;
-        pthread_create(&st_threads[i], NULL, stats_thread_func, (void*) &stfargs[i]); */
+        pthread_create(&st_threads[i], NULL, stats_thread_func, (void*) &stfargs[i]);*/
     }
     std::cout << "done." << std::endl;
  
@@ -228,7 +228,7 @@ int main(int argc, char * argv[]) {
         std::cout << "done." << std::endl;
         create_worker(i, new_chan, PCB, wtfargs);
     }
-    
+
     usleep(1000000);
     exit(0);
 }
