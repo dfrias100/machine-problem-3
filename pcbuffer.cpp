@@ -50,13 +50,13 @@
 /*--------------------------------------------------------------------------*/
 
 PCBuffer::PCBuffer(int _size) : size(_size), empty(_size), full(0), mutex(1) {
-    //m = PTHREAD_MUTEX_INITIALIZER;
+    //mutex = PTHREAD_MUTEX_INITIALIZER;
     //notfull = PTHREAD_COND_INITIALIZER;
     //notempty = PTHREAD_COND_INITIALIZER;
     //empty = Semaphore(size);
     //full = Semaphore(0);
     //mutex = Semaphore(1);
-    buffer = new string[size];
+    buffer = new std::string[size];
     nextin = 0;
     nextout = 0;
     count = 0;
@@ -66,32 +66,33 @@ PCBuffer::~PCBuffer() {
     delete[] buffer;
 }
 
-int PCBuffer::Deposit(string _item) {
+int PCBuffer::Deposit(std::string _item) {
     //pthread_mutex_lock(&m);
     //while (count == size)
     //    pthread_cond_wait(&notempty, &m);
     empty.P();
     mutex.P();
+    //pthread_mutex_lock(&mutex);
     buffer[nextin] = _item;
     nextin = (nextin + 1) % size;
-    count = count + 1;
+    //pthread_mutex_unlock(&mutex);
     mutex.V();
     full.V();
     //pthread_mutex_unlock(&m);
     //pthread_cond_signal(&notfull);
-    return count;
+    return 0;
 }
 
 
-string PCBuffer::Retrieve() {
+std::string PCBuffer::Retrieve() {
     //while (count == 0)
     //    pthread_cond_wait(&notempty, &m);
     //pthread_mutex_lock(&m);
     full.P();
     mutex.P();
-    string ret = buffer[nextout];
+    //pthread_mutex_lock(&mutex);
+    std::string ret = buffer[nextout];
     nextout = (nextout + 1) % size;
-    count = count - 1;
     mutex.V();
     empty.V();
     //pthread_mutex_unlock(&m);

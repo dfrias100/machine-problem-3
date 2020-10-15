@@ -55,6 +55,8 @@ Semaphore::Semaphore(int _val) : value(_val) {
 }
 
 Semaphore::~Semaphore() {
+    pthread_cond_destroy(&c);
+    pthread_mutex_destroy(&m);
 }
 
 int Semaphore::P() {

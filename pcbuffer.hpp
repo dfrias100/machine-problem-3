@@ -25,7 +25,6 @@
 #include <pthread.h>
 #include "semaphore.hpp"
 
-using namespace std;
 /*--------------------------------------------------------------------------*/
 /* DATA STRUCTURES */ 
 /*--------------------------------------------------------------------------*/
@@ -48,7 +47,7 @@ private:
   /* -- INTERNAL DATA STRUCTURES
      You will need to change them to fit your implementation. */
 
-  string        * buffer; // We buffer the data in an array of strings. 
+  std::string        * buffer; // We buffer the data in an array of strings. 
                           // You may instead prefer a vector, or a queue, or ...
   int             size;   // Size of the bounded buffer.
  
@@ -56,7 +55,7 @@ private:
 
   //pthread_cond_t notfull, notempty;
 
-  //pthread_mutex_t m;
+  //pthread_mutex_t mutex;
 
   Semaphore mutex;
   Semaphore empty;
@@ -72,9 +71,9 @@ public:
   
   /* -- OPERATIONS ON PC BUFFER */
 
-  int Deposit(string  _item);
+  int Deposit(std::string  _item);
 
-  string Retrieve();
+  std::string Retrieve();
 
 };
 

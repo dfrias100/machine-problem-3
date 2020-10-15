@@ -132,8 +132,22 @@ RequestChannel::RequestChannel(const std::string _name, const Side _side)
     open_write_pipe(pipe_name(Mode::WRITE));
     open_read_pipe(pipe_name(Mode::READ));
   } else {
-    open_read_pipe(pipe_name(Mode::READ));
-    open_write_pipe(pipe_name(Mode::WRITE));
+    //open_read_pipe(pipe_name(Mode::READ));
+    //open_write_pipe(pipe_name(Mode::WRITE));
+
+    // Changed section ----------------------
+    // Make the same calls as before, but store the pointer
+    char* p1 = pipe_name(Mode::READ);
+    open_read_pipe(p1);
+
+    // Make the same calls as before, but store the pointer
+    char* p2 = pipe_name(Mode::WRITE);
+    open_write_pipe(p2);
+
+    // Free the memory
+    delete[] p1;
+    delete[] p2;
+    // End changed section ------------------
   }
   
 }
