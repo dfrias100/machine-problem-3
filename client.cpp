@@ -226,7 +226,7 @@ void create_worker(int _thread_id, RequestChannel* rq, PCBuffer* PCB, int* n_wkr
 int main(int argc, char * argv[]) {
     /* TODO:
         - Clean up code & re-check, otherwise, the program is finished.
-    ./
+    */
     size_t num_requests = 0;
     size_t pcb_size = 0;
     size_t num_threads = 0;
