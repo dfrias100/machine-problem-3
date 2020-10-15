@@ -187,7 +187,7 @@ void* worker_thread_func(void* wtfargs) {
         std::string reply = args->rc->send_request(req);
         std::cout << "Out from PCBuffer: " << req << std::endl;
         request_chan_mutex.V();
-	    std::cout << "Reply to request '" << req << "': " << reply << std::endl;
+        std::cout << "Reply to request '" << req << "': " << reply << std::endl;
 
         std::string name = req.substr(5, req.length() - 1);
         PatientHistogram* patient_histogram = &(*args->PatientData)[name];
