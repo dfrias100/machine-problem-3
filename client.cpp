@@ -265,9 +265,6 @@ void create_stats(int _thread_num, std::string _patient_name, std::unordered_map
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char * argv[]) {
-    /* TODO:
-        - Clean up code & re-check, otherwise, the program is finished.
-    */
     size_t num_requests = 0;
     size_t pcb_size = 0;
     size_t num_threads = 0;
