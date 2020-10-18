@@ -173,8 +173,8 @@ void* worker_thread_func(void* wtfargs) {
         std::cout << "Reply to request '" << req << "': " << reply << std::endl;
 
         std::string name = req.substr(5, req.length() - 1);
-        PatientHistogram* patient_histogram = &(*args->PatientData)[name];
-        patient_histogram->PatientDataBuffer->Deposit(reply);
+        PCBuffer* patient_buff = &(*args->PatientData)[name].PatientDataBuffer;
+        patient_buff->Deposit(reply);
     }
 
     return nullptr;
