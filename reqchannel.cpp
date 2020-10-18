@@ -132,14 +132,17 @@ RequestChannel::RequestChannel(const std::string _name, const Side _side)
     open_write_pipe(pipe_name(Mode::WRITE));
     open_read_pipe(pipe_name(Mode::READ));
   } else {
-    //open_read_pipe(pipe_name(Mode::READ));
-    //open_write_pipe(pipe_name(Mode::WRITE));
+    /* This implementation caused memory leaks. 
+    open_read_pipe(pipe_name(Mode::READ));
+    open_write_pipe(pipe_name(Mode::WRITE)); */
 
+    // We store the pointers to the pipe name string
     char* pipe1 = pipe_name(Mode::READ);
     char* pipe2 = pipe_name(Mode::WRITE);
     open_read_pipe(pipe1);    
     open_write_pipe(pipe2);
 
+    // Once we've opened the pipes, we don't need the C strings anymore
     delete[] pipe1;
     delete[] pipe2;
   }
