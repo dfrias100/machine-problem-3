@@ -334,7 +334,7 @@ int main(int argc, char * argv[]) {
             // These PCBuffers needs to be allocated on the heap, otherwise it will be destroyed once it leaves scope, even if we pass a reference.
             PCBuffer* stats_buff = new PCBuffer(pcb_size);
             patient_data[patient_name].PatientDataBuffer = stats_buff;
-            patient_data[patient_name].histogram = std::vector(10, 0);
+            patient_data[patient_name].histogram = std::vector<int>(10, 0);
             create_stats(i, patient_name, &patient_data, st_threads, stfargs);
         }
         std::cout << "done." << std::endl;
