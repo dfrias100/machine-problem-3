@@ -52,7 +52,7 @@ typedef struct {
         80 - 89
         90 - 99 */
     PCBuffer* PatientDataBuffer;
-    std::vector<int> histogram[10]; 
+    std::vector<int> histogram; 
 } PatientHistogram;
 
 typedef struct {
@@ -95,36 +95,19 @@ const size_t NUM_PATIENTS = 5;
 /* LOCAL FUNCTIONS -- SUPPORT FUNCTIONS */
 /*--------------------------------------------------------------------------*/
 
-void print_histogram(std::vector<int> histogram[]) {
+void print_histogram(std::vector<int> histogram) {
     size_t total_data_points = 0;
     size_t scale = 1;
 
     /* This is needed so that we can see if we need to scale the data down or not */
     for (size_t i = 0; i < 10; i++)
-        total_data_points += histogram[i].size();
+        total_data_points += histogram[i];
 
     std::cout << "Size of data: " << total_data_points << std::endl;
 
-    /* If the dataset is too large, there will be too many x's printed on the screen, so we scale it down by a factor of 100 */
-    if (total_data_points >= 1000) {
-        scale = total_data_points / 100;
-        std::cout << "Scale: One 'x' for every " << scale << " data points.";
-        std::cout << " (A '^' indicates partial data.)" << std::endl;
-    } else {
-        std::cout << "Scale: One 'x' for every data point." << std::endl;
-    }
-
-    for (size_t i = 0; i < 10; i++) {
-        std::cout << std::setw(2) << std::setfill('0') << i * 10 << "-" << std::setw(2) << std::setfill('0') << i * 10 + 9 << ":";
-        for (size_t j = 0; j < histogram[i].size(); j++) {
-            if ((j + 1) % scale == 0) {
-                std::cout << "x"; 
-            }
-        }
-        /* If there is still data that hasn't been accounted for in the histogram, this will tell the user there is more data */
-        if (histogram[i].size() % scale != 0) 
-            std::cout << "^";
-        std::cout << std::endl;
+    for(int i = 0; i < 10; i++) {
+        std::cout << std::setw(2) << std::setfill('0') << i * 10 << "-" << i * 10 + 9 << ": ";
+        std::cout << histogram[i] << std::endl;
     }
 }
 
@@ -218,25 +201,25 @@ void* stats_thread_func(void* args) {
         } else {
             size_t data = stoi(req);
             if (data <= 9) {
-                patient_histogram->histogram[0].push_back(data);
+                patient_histogram->histogram[0]++;
             } else if (data <= 19) {
-                patient_histogram->histogram[1].push_back(data);
+                patient_histogram->histogram[1]++;
             } else if (data <= 29) {
-                patient_histogram->histogram[2].push_back(data);
+                patient_histogram->histogram[2]++;
             } else if (data <= 39) {
-                patient_histogram->histogram[3].push_back(data);
+                patient_histogram->histogram[3]++;
             } else if (data <= 49) {
-                patient_histogram->histogram[4].push_back(data);
+                patient_histogram->histogram[4]++;
             } else if (data <= 59) {
-                patient_histogram->histogram[5].push_back(data);
+                patient_histogram->histogram[5]++;
             } else if (data <= 69) {
-                patient_histogram->histogram[6].push_back(data);
+                patient_histogram->histogram[6]++;
             } else if (data <= 79) {
-                patient_histogram->histogram[7].push_back(data);
+                patient_histogram->histogram[7]++;
             } else if (data <= 89) {
-                patient_histogram->histogram[8].push_back(data);
+                patient_histogram->histogram[8]++;
             } else {
-                patient_histogram->histogram[9].push_back(data);
+                patient_histogram->histogram[9]++;
             }
         }
     }
@@ -351,6 +334,7 @@ int main(int argc, char * argv[]) {
             // These PCBuffers needs to be allocated on the heap, otherwise it will be destroyed once it leaves scope, even if we pass a reference.
             PCBuffer* stats_buff = new PCBuffer(pcb_size);
             patient_data[patient_name].PatientDataBuffer = stats_buff;
+            patient_data[patient_name].histogram = vector(10, 0);
             create_stats(i, patient_name, &patient_data, st_threads, stfargs);
         }
         std::cout << "done." << std::endl;
