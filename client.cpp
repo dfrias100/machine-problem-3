@@ -106,7 +106,7 @@ void print_histogram(std::vector<int> histogram) {
     std::cout << "Size of data: " << total_data_points << std::endl;
 
     for(int i = 0; i < 10; i++) {
-        std::cout << std::setw(2) << std::setfill('0') << i * 10 << "-" << i * 10 + 9 << ": ";
+        std::cout << std::setw(2) << std::setfill('0') << i * 10 << "-" << std::setw(2) << std::setfill('0') << i * 10 + 9 << ": ";
         std::cout << histogram[i] << std::endl;
     }
 }
