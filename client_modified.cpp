@@ -26,7 +26,9 @@
 #include <unordered_map>
 #include <vector>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -142,7 +144,7 @@ void* worker_thread_func(void* wtfargs) {
         // The number of threads active is a shared variable, so we need to synchronize the access to the variable.
         if (req.compare("done") == 0) {
             std::cout << "Worker thread read 'done' from PCBuffer" << std::endl;
-            args->rc->send_request("quit");
+            std::string reply = args->rc->send_request("quit");
             args->PCB->Deposit("done");
             n_wkr_thread_count_mutex.P();
             if (*n_wkr_threads != 1) {
@@ -293,6 +295,13 @@ int main(int argc, char * argv[]) {
     if (fork() == 0){ 
         execve("dataserver", NULL, NULL);
     } else {
+        struct timeval t1;
+        struct timeval t2;
+        long diff_sec;
+        long diff_usec;
+        // File to hold the data for overhead
+        std::ofstream fout;
+        fout.open("outfile.csv", std::ios_base::app);
         std::cout << "CLIENT STARTED:" << std::endl;
         std::cout << "Establishing control channel... " << std::flush;
         RequestChannel chan("control", RequestChannel::Side::CLIENT);
@@ -335,7 +344,7 @@ int main(int argc, char * argv[]) {
             create_stats(i, patient_name, &patient_data, st_threads, stfargs);
         }
         std::cout << "done." << std::endl;
-
+        gettimeofday(&t1, 0);
         for (size_t i = 0; i < num_threads; i++) {
             std::string reply = chan.send_request("newthread");
             std::cout << "Reply to request 'newthread' is " << reply << std::endl;
@@ -351,6 +360,16 @@ int main(int argc, char * argv[]) {
         for (size_t i = 0; i < NUM_PATIENTS; i++)
             pthread_join(st_threads[i], NULL);
 
+        gettimeofday(&t2, 0);
+        diff_sec = t2.tv_sec - t1.tv_sec;
+        diff_usec = t2.tv_usec - t1.tv_usec;
+        if(diff_usec < 0) {
+            diff_usec += 1000000;
+            diff_sec--;
+        }
+        // This will output to data1.csv
+        fout << num_requests << ", " << num_threads << ", " << pcb_size << ", " << diff_sec*1e6 + diff_usec << std::endl;
+
         std::cout << "Closing control request channel..." << std::endl;
         std::string fin_reply = chan.send_request("quit");
         std::cout << "Reply from control channel read: " << fin_reply << std::endl;
@@ -364,8 +383,7 @@ int main(int argc, char * argv[]) {
             pthread_detach(rq_threads[i]);
         for (size_t i = 0; i < num_threads; i++) {
             pthread_detach(wk_threads[i]);    
-            delete wtfargs[i].rc; // The reason they are deleted here is so that the server threads have a chance to read the quit message, or else it 
-                                  // can leave behind some fifo_* files.
+            delete wtfargs[i].rc;
         }
 
         delete[] rq_threads;
@@ -374,6 +392,7 @@ int main(int argc, char * argv[]) {
         delete[] wtfargs;
         delete[] stfargs;
         delete[] rtfargs;
+        fout.close();
         std::cout << "Client stopped successfully." << std::endl;
     }
 
